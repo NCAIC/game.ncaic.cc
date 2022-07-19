@@ -8,24 +8,33 @@ export enum COLOR {
 }
 
 export interface Payload {
-    board?: COLOR[][];
-    emphasized?: {
+    title: string;
+    board: COLOR[][];
+    emphasized: {
         y: number;
         x: number;
         type: number;
     }[];
-    teams?: {
+    teams: {
         name: string;
-        win: number;
+        color: string;
         time: {
             total: number;
             set: number;
             remaining: number;
         };
     }[];
-    msg?: {
-        channel: number;
-        content: string;
+    sets: {
+        type: SetResultType;
+        color?: string;
     }[];
-    clients?: number;
+    clients: number;
+}
+
+export enum SetResultType {
+    none,
+    row,
+    invalid,
+    timeout,
+    draw,
 }

@@ -6,13 +6,20 @@ export const ws = ref<WebSocket>();
 export const token = ref("");
 let latency_test_start = 0;
 export const latency = ref(0);
-export const messages = reactive<Required<Payload>["msg"]>([]);
-export const data = reactive<Omit<Required<Payload>, "msg">>({
+let gracefully_closing = false;
+export const data = reactive<Payload>({
+    title: "測試模式 Test Mode",
+    teams: [
+        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 } },
+        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 } },
+    ],
+    sets: [],
     board: Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => COLOR.EMPTY)),
     emphasized: [],
-    teams: [],
     clients: 0,
 });
+export const started = ref(false);
+export const ended = ref(false);
 
 export function connect(url: string) {
     if (ws.value) {
@@ -36,12 +43,24 @@ export function connect(url: string) {
     });
     ws.value.addEventListener("close", () => {
         console.log("[WS] backend disconnected");
-        Swal.fire({
-            title: "Disconnected",
-            text: `Disconnected from ${url}`,
-            icon: "info",
-            showConfirmButton: false,
-        });
+        if (!gracefully_closing) {
+            Swal.fire({
+                title: "Disconnected",
+                text: `Disconnected from ${url}`,
+                icon: "info",
+                showConfirmButton: false,
+            });
+        } else {
+            gracefully_closing = false;
+            ended.value = true;
+            Swal.fire({
+                title: "Competition ended",
+                text: `Competition ended`,
+                icon: "info",
+                showConfirmButton: false,
+                timer: 2000,
+            });
+        }
         ws.value = undefined;
     });
     ws.value.addEventListener("error", (err) => {
@@ -59,21 +78,25 @@ export function connect(url: string) {
     });
 }
 
-async function react(type: string, payload: Payload) {
-    if (payload.board) {
+async function react(type: string, payload?: Payload & { started?: boolean }) {
+    if (payload?.board) {
         data.board = payload.board;
     }
-    if (payload.emphasized) {
+    if (payload?.sets) {
+        data.sets = payload.sets;
+    }
+    if (payload?.emphasized) {
         data.emphasized = payload.emphasized;
     }
-    if (payload.teams) {
+    if (payload?.teams) {
         data.teams = payload.teams;
     }
-    if (payload.msg) {
-        messages.push(...payload.msg);
-    }
-    if (payload.clients) {
+    if (payload?.clients) {
         data.clients = payload.clients;
+    }
+
+    if (payload?.started) {
+        started.value = payload.started;
     }
 
     switch (type) {
@@ -85,6 +108,7 @@ async function react(type: string, payload: Payload) {
             break;
         case "competition-end":
             console.log("[WS] competition-end. ", payload);
+            gracefully_closing = true;
             break;
         case "set-start":
             console.log("[WS] set-start. ", payload);
