@@ -10,9 +10,10 @@ let gracefully_closing = false;
 export const data = reactive<Payload>({
     title: "測試模式 Test Mode",
     teams: [
-        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 } },
-        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 } },
+        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 }, stone: 0 },
+        { name: "", color: "", time: { total: 0, set: 0, remaining: 0 }, stone: 1 },
     ],
+    now: 0,
     sets: [],
     board: Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => COLOR.EMPTY)),
     emphasized: [],
@@ -20,6 +21,7 @@ export const data = reactive<Payload>({
 });
 export const started = ref(false);
 export const ended = ref(false);
+export const playable = ref(false);
 
 export function connect(url: string) {
     if (ws.value) {
@@ -91,12 +93,19 @@ async function react(type: string, payload?: Payload & { started?: boolean }) {
     if (payload?.teams) {
         data.teams = payload.teams;
     }
+    if (payload?.now !== undefined) {
+        data.now = payload.now;
+    }
     if (payload?.clients) {
         data.clients = payload.clients;
     }
 
     if (payload?.started) {
         started.value = payload.started;
+    }
+
+    if (!["pong", "client-count", "wait"].includes(type)) {
+        playable.value = false;
     }
 
     switch (type) {
@@ -127,6 +136,7 @@ async function react(type: string, payload?: Payload & { started?: boolean }) {
                 showConfirmButton: false,
                 timer: 3000,
             });
+            playable.value = true;
             break;
         case "pong":
             latency.value = (Date.now() - latency_test_start) / 2;
@@ -148,3 +158,12 @@ window.setInterval(() => {
         send("ping", {});
     }
 }, 3_000);
+
+window.setInterval(() => {
+    if (started.value && !ended.value) {
+        const now = data.teams.find((t) => t.stone === data.now);
+        if (now) {
+            now.time.remaining -= 100;
+        }
+    }
+}, 100);

@@ -40,7 +40,7 @@ defineProps<{
             v-if="state === COLOR.Black || state === COLOR.White"
             :class="[
                 state === COLOR.Black ? 'bg-black' : 'bg-white',
-                marked ? ' animate-pulse shadow-md shadow-violet-500' : '',
+                marked ? 'animate-pulse ring-2 ring-violet-500' : '',
                 'h-[70%] w-[70%] rounded-full md:h-3/5 md:w-3/5',
             ]"
         ></div>

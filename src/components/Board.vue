@@ -2,6 +2,7 @@
 import { reactive, ref, watch } from "vue";
 import Grid from "./Grid.vue";
 import { COLOR, BOARDSIZE } from "../gobang";
+import { playable, send, data } from "../composables/core";
 
 interface Payload {
     board: COLOR[];
@@ -27,6 +28,18 @@ const board: COLOR[] = reactive(Array.from({ length: 225 }, () => 0));
 watch(props, () => {
     board.splice(0, board.length, ...props.board.flat());
     console.log("board", board);
+
+    ui.forEach((ui, i) => {
+        ui.selected = false;
+        ui.marked = false;
+    });
+
+    for (let i = 0; i < data.emphasized.length; i++) {
+        ui[data.emphasized[i].y * BOARDSIZE + data.emphasized[i].x].selected =
+            data.emphasized[i].type === 1;
+        ui[data.emphasized[i].y * BOARDSIZE + data.emphasized[i].x].marked =
+            data.emphasized[i].type === 2;
+    }
 });
 
 const ui = reactive(
@@ -40,6 +53,15 @@ const winner = reactive({ color: COLOR.Empty, stones: <number[]>[] });
 emit("init", { board, turn: turn.value, current: current.value, winner, ui });
 
 defineExpose({ ui });
+
+function play(x: number, y: number) {
+    if (!playable.value || board[x + y * BOARDSIZE] !== COLOR.Empty) {
+        return;
+    }
+
+    console.log("play", { x, y });
+    send("put-stone", { x, y });
+}
 </script>
 
 <template>
@@ -54,7 +76,8 @@ defineExpose({ ui });
             :marked="ui[i].marked"
             @mouseenter="ui[i].selected = true"
             @mouseleave="ui[i].selected = false"
-            :class="[false ? 'cursor-pointer' : 'cursor-not-allowed']"
+            :class="[playable && state === COLOR.Empty ? 'cursor-pointer' : 'cursor-not-allowed']"
+            @click="play(i % BOARDSIZE, Math.floor(i / BOARDSIZE))"
         />
     </div>
 </template>

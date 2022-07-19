@@ -36,13 +36,19 @@ import { SetResultType } from "../composables/types";
                             }"
                         ></div>
                         <div
-                            class="flex h-20 w-full items-center overflow-auto rounded-b border-t border-green-400 bg-green-300 p-4 text-3xl"
+                            class="flex h-20 w-full flex-row items-center overflow-auto rounded-b border-t border-green-400 bg-green-300 p-4 text-3xl"
                             :style="{
                                 background: data.teams?.[0] ? data.teams[0].color + 'cc' : '',
                                 borderColor: data.teams?.[0] ? data.teams[0].color : '',
                             }"
                         >
-                            <p>{{ data.teams?.[0].name || "" }}</p>
+                            <p class="flex-1">{{ data.teams?.[0].name || "" }}</p>
+                            <div
+                                :class="[
+                                    'm-4 aspect-square h-3/5 rounded-full border border-slate-500',
+                                    data.teams?.[0].stone ? 'bg-white' : 'bg-black',
+                                ]"
+                            ></div>
                         </div>
                     </div>
                 </div>
@@ -69,13 +75,19 @@ import { SetResultType } from "../composables/types";
                 <div class="flex flex-1 items-center">
                     <div class="w-full">
                         <div
-                            class="flex h-20 w-full items-center overflow-auto rounded-t border-b border-blue-400 bg-blue-300 p-4 text-3xl"
+                            class="flex h-20 w-full flex-row items-center overflow-auto rounded-t border-b border-blue-400 bg-blue-300 p-4 text-3xl"
                             :style="{
                                 background: data.teams?.[1] ? data.teams[1].color + 'cc' : '',
                                 borderColor: data.teams?.[1] ? data.teams[1].color : '',
                             }"
                         >
-                            <p>{{ data.teams?.[1].name || "" }}</p>
+                            <p class="flex-1">{{ data.teams?.[1].name || "" }}</p>
+                            <div
+                                :class="[
+                                    'm-4 aspect-square h-3/5 rounded-full border border-slate-500',
+                                    data.teams?.[1].stone ? 'bg-white' : 'bg-black',
+                                ]"
+                            ></div>
                         </div>
                         <div
                             class="h-2 w-full rounded-b bg-blue-300 opacity-60 transition-all"
