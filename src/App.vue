@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Fade from "./components/Fade.vue";
-import { ws, connect, token, latency, ended } from "./composables/core";
+import { ws, connect, token, latency, ended, data } from "./composables/core";
 
 const Connect = defineAsyncComponent(() => import("./components/Connect.vue"));
 
@@ -47,7 +47,8 @@ function prefill() {
         </div>
         <Connect v-else></Connect>
         <div v-if="ws" class="fixed bottom-0 right-0 p-1 font-mono text-sm text-amber-500">
-            connected to {{ server }} | latency {{ latency.toFixed(1) }} ms
+            connected to {{ server }} | {{ data.clients }} clients | latency
+            {{ latency.toFixed(1) }} ms
         </div>
     </div>
 </template>
