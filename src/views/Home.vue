@@ -54,7 +54,7 @@ import { SetResultType } from "../composables/types";
                 </div>
                 <div class="flex flex-1 items-center justify-center">
                     <div
-                        v-if="started && token"
+                        v-if="started"
                         v-for="(set, i) in data.sets"
                         class="m-2 flex aspect-square flex-1 items-center justify-center rounded border border-slate-300 bg-slate-200 text-xl text-slate-400 transition-all lg:text-3xl xl:text-4xl"
                         :key="i"
@@ -65,11 +65,17 @@ import { SetResultType } from "../composables/types";
                         <MdiCancel v-else-if="set.type === SetResultType.invalid" />
                     </div>
                     <div
-                        v-if="!started && token"
+                        v-else-if="token"
                         class="m-2 flex w-full cursor-pointer items-center justify-center rounded-lg bg-amber-400 py-2 px-4 text-amber-50 transition-all hover:bg-amber-500 lg:text-3xl xl:text-4xl"
                         @click="send('start', {})"
                     >
                         Start!
+                    </div>
+                    <div
+                        v-else
+                        class="m-2 flex w-full animate-pulse items-center justify-center rounded-lg bg-slate-200 py-2 px-4 text-slate-400 lg:text-3xl xl:text-4xl"
+                    >
+                        Waiting for start ...
                     </div>
                 </div>
                 <div class="flex flex-1 items-center">
