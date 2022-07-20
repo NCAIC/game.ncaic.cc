@@ -118,9 +118,16 @@ import { SetResultType } from "../composables/types";
                 </div>
             </div>
             <div
-                class="m-2 flex items-center justify-center rounded-lg border border-slate-200 p-2"
+                class="m-2 flex flex-col items-center justify-center rounded-lg border border-slate-200 p-2"
             >
-                <p class="text-3xl text-slate-500">Advertisement</p>
+                <div class="flex h-1/3 items-center justify-center">
+                    <img class="h-full px-2" src="/icons/512x512.png" />
+                    <img class="h-5/6 px-2 mix-blend-multiply" src="/logo.large.gif" />
+                </div>
+                <p class="my-2 text-xs text-slate-500 lg:text-base">
+                    網際網路競技人工智慧全國大賽 2022
+                </p>
+                <p class="my-2 text-3xl">{{ data.title }}</p>
             </div>
         </div>
     </div>
