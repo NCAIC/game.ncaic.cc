@@ -80,24 +80,12 @@ export function connect(url: string) {
     });
 }
 
-async function react(type: string, payload?: Payload & { started?: boolean }) {
-    if (payload?.board) {
-        data.board = payload.board;
-    }
-    if (payload?.sets) {
-        data.sets = payload.sets;
-    }
-    if (payload?.emphasized) {
-        data.emphasized = payload.emphasized;
-    }
-    if (payload?.teams) {
-        data.teams = payload.teams;
-    }
-    if (payload?.now !== undefined) {
-        data.now = payload.now;
-    }
-    if (payload?.clients) {
-        data.clients = payload.clients;
+async function react(type: string, payload?: Partial<Payload> & { started?: boolean }) {
+    const fields = ["title", "teams", "now", "sets", "board", "emphasized", "clients"] as const;
+    for (const field of fields) {
+        if (typeof payload?.[field] !== "undefined") {
+            data[field] = payload[field] as never;
+        }
     }
 
     if (payload?.started) {
