@@ -1,22 +1,7 @@
-# Vue Gobang
+# game.ncaic.cc
 
-Just an 1 hour short trip with Vue 3 and Master CSS.
+Web Client of NCAIC competition.
 
-A Gobang (Gomoku) game.
+[ncaic.cc](https://game.ncaic.cc/)
 
-[https://jacoblincool.github.io/vue-gobang/](https://jacoblincool.github.io/vue-gobang/)
-
-![screenshot](./public/screenshot.png)
-
-## Tech Stack
-
-- [Vue 3](https://vuejs.org/)
-- [Master CSS](https://master.co/)
-
-## Features
-
-- [x] Play
-- [x] Log
-- [x] Save
-- [x] Re-play
-- [ ] Computer Player
+![banner](https://raw.githubusercontent.com/NCAIC/.github/main/assets/banner/ncaic-banner.1280%C3%97652.png)
